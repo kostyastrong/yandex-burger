@@ -4,3 +4,7 @@
   gap: 40px;
   margin: 0 15em;
 }
+
+.App {
+  height: 100vh;
+}

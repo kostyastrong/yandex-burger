@@ -1,0 +1,16 @@
+.price {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.subtitle {
+    text-align: center;
+    min-height: 72px;
+}
+
+.component {
+    position:relative;
+    display: flex;
+    flex-direction: column;
+}

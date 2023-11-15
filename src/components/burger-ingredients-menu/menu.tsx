@@ -1,43 +1,88 @@
 import styles from './menu.module.css';
-import { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef} from 'react';
 import Component from "../burger-ingredients-component/component";
-export default function Menu() {
+import {Ingredient} from "../utlis/types";
+
+export default function Menu({ingredients, activeTab, setActiveTab}: {
+    ingredients: Ingredient[],
+    activeTab: string,
+    setActiveTab: (value: string) => void
+}) {
     const bunRef = useRef<HTMLParagraphElement>(null);
     const sauceRef = useRef<HTMLParagraphElement>(null);
     const mainRef = useRef<HTMLParagraphElement>(null);
-    const scrollRef = useRef<HTMLParagraphElement>(null);
-    const [scroll, setScroll] = useState('bun');
+    const rootRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (scroll === 'bun') {
-            bunRef.current?.scrollIntoView({ behavior: 'smooth' })
+        const handleScroll = () => {
+            const scrollElement = rootRef.current;
+            if (!scrollElement) {
+                return;
+            }
+            const { scrollTop } = scrollElement;
+            const bunSectionTop = bunRef.current?.offsetTop || 0;
+            const sauceSectionTop = sauceRef.current?.offsetTop || 0;
+
+            if (scrollTop < bunSectionTop && activeTab !== 'bun') {
+                setActiveTab('bun');
+            } else if (scrollTop >= bunSectionTop && scrollTop < sauceSectionTop && activeTab !== 'sauce') {
+                setActiveTab('sauce');
+            } else if (scrollTop >= sauceSectionTop && activeTab !== 'main') {
+                setActiveTab('main');
+            }
+        };
+
+        const scrollElement = rootRef.current;
+        if (scrollElement) {
+            scrollElement.addEventListener('scroll', handleScroll);
         }
-        if (scroll === 'sauce') {
-            sauceRef.current?.scrollIntoView({ behavior: 'smooth' })
-        }
-        if (scroll === 'main') {
-            mainRef.current!.scrollIntoView({ behavior: 'smooth' })
-        }
-    }, [scroll])
+
+        return () => {
+            if (scrollElement) {
+                scrollElement.removeEventListener('scroll', handleScroll);
+            }
+        };
+    }, [activeTab, setActiveTab]);
 
     return (
-        <div className={styles.scroll} ref={scrollRef}>
+        <div className={styles.scroll} ref={rootRef}>
             <div>
                 <h3 className="text text_type_main-medium" ref={bunRef}>Булки</h3>
                 <div className={styles.list}>
-                    <Component text="bun"/>
+                    {ingredients
+                        .filter((ingredient: Ingredient) => ingredient.type === 'bun')
+                        .map((ingredient: Ingredient) => (
+                            <Component
+                                ingredient={ingredient}
+                                key={ingredient._id}
+                            />
+                        ))}
                 </div>
             </div>
             <div>
                 <h3 className="text text_type_main-medium" ref={sauceRef}>Соусы</h3>
                 <div className={styles.list}>
-                    <Component text='sauce'/>
+                    {ingredients
+                        .filter((ingredient: Ingredient) => ingredient.type === 'sauce')
+                        .map((ingredient: Ingredient) => (
+                            <Component
+                                ingredient={ingredient}
+                                key={ingredient._id}
+                            />
+                        ))}
                 </div>
             </div>
             <div>
-                <h3 className="text text_type_main-medium">Начинки</h3>
+                <h3 className="text text_type_main-medium" ref={mainRef}>Начинки</h3>
                 <div className={styles.list}>
-                    <Component text='main' />
+                    {ingredients
+                        .filter((ingredient: Ingredient) => ingredient.type === 'main')
+                        .map((ingredient: Ingredient) => (
+                            <Component
+                                ingredient={ingredient}
+                                key={ingredient._id}
+                            />
+                        ))}
                 </div>
             </div>
         </div>

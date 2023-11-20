@@ -3,7 +3,7 @@ import styles from './App.module.css';
 import AppHeader from "../app-header/app-header";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
-import {Ingredient} from "../utlis/types";
+
 
 export default function App() {
 
@@ -31,10 +31,11 @@ export default function App() {
         <div className={styles.App}>
             <AppHeader></AppHeader>
             <div className={styles.main}>
-                <BurgerIngredients ingredients = {ingredients}></BurgerIngredients>
-                <BurgerConstructor></BurgerConstructor>
+                <BurgerIngredients ingredients={ingredients}></BurgerIngredients>
+                <BurgerConstructor ingredients={ingredients}
+                                   order={ingredients.map((ingredient) => ingredient["_id"])}></BurgerConstructor>
             </div>
         </div>
-    );
+    );  // ingredient["_id"] should be used carefully, e.g. when ingredients are not fetch, it brakes
 }
 

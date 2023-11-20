@@ -14,35 +14,63 @@ export default function Menu({ingredients, activeTab, setActiveTab}: {
     const rootRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const handleScroll = () => {
-            const scrollElement = rootRef.current;
-            if (!scrollElement) {
-                return;
-            }
-            const { scrollTop } = scrollElement;
-            const bunSectionTop = bunRef.current?.offsetTop || 0;
-            const sauceSectionTop = sauceRef.current?.offsetTop || 0;
+        if (activeTab === 'bun') {
+            bunRef.current?.scrollIntoView({ behavior: 'smooth' })
+        }
+        if (activeTab === 'sauce') {
+            sauceRef.current?.scrollIntoView({ behavior: 'smooth' })
+        }
+        if (activeTab === 'main') {
+            mainRef.current?.scrollIntoView({ behavior: 'smooth' })
+        }
+    }, [activeTab])
 
-            if (scrollTop < bunSectionTop && activeTab !== 'bun') {
-                setActiveTab('bun');
-            } else if (scrollTop >= bunSectionTop && scrollTop < sauceSectionTop && activeTab !== 'sauce') {
-                setActiveTab('sauce');
-            } else if (scrollTop >= sauceSectionTop && activeTab !== 'main') {
-                setActiveTab('main');
-            }
+    useEffect(() => {
+        const options = {
+            root: rootRef.current,
+            rootMargin: '0% 0% -620px 0%',
+            target: 1
         };
 
-        const scrollElement = rootRef.current;
-        if (scrollElement) {
-            scrollElement.addEventListener('scroll', handleScroll);
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const { target } = entry;
+
+                    if (target === bunRef.current && activeTab !== "bun") {
+                        setActiveTab("bun");
+                    } else if (target === sauceRef.current && activeTab !== "sauce") {
+                        setActiveTab("sauce");
+                    } else if (target === mainRef.current && activeTab !== "main") {
+                        setActiveTab("main");
+                    }
+                }
+            });
+        }, options);
+
+        if (bunRef.current) {
+            observer.observe(bunRef.current);
+        }
+        if (sauceRef.current) {
+            observer.observe(sauceRef.current);
+        }
+        if (mainRef.current) {
+            observer.observe(mainRef.current);
         }
 
         return () => {
-            if (scrollElement) {
-                scrollElement.removeEventListener('scroll', handleScroll);
+            if (bunRef.current) {
+                observer.unobserve(bunRef.current);
+            }
+            if (sauceRef.current) {
+                observer.unobserve(sauceRef.current);
+            }
+            if (mainRef.current) {
+                observer.unobserve(mainRef.current);
             }
         };
-    }, [activeTab, setActiveTab]);
+    }, [activeTab]);
 
     return (
         <div className={styles.scroll} ref={rootRef}>

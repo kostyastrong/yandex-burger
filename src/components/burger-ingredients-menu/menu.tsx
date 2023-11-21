@@ -1,41 +1,51 @@
 import styles from './menu.module.css';
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import Component from "../burger-ingredients-component/component";
 import {Ingredient} from "../utlis/types";
 
-export default function Menu({ingredients, activeTab, setActiveTab}: {
+export default function Menu({ingredients, activeTab, setActiveTab, scroll, setScroll}: {
     ingredients: Ingredient[],
     activeTab: string,
-    setActiveTab: (value: string) => void
+    scroll: boolean,
+    setActiveTab: (value: string) => void,
+    setScroll: (value: boolean) => void,
 }) {
     const bunRef = useRef<HTMLParagraphElement>(null);
     const sauceRef = useRef<HTMLParagraphElement>(null);
     const mainRef = useRef<HTMLParagraphElement>(null);
     const rootRef = useRef<HTMLDivElement>(null);
+    const [modalIndex, setModalIndex] = useState("-1");
 
     useEffect(() => {
-        if (activeTab === 'bun') {
-            bunRef.current?.scrollIntoView({ behavior: 'smooth' })
+        if (!scroll) {  // for smoother behaviour, useEffect doesn't work when buttons in the tabBar weren't pushed
+            if (activeTab === 'bun') {
+                bunRef.current?.scrollIntoView({ behavior: 'smooth' })
+            }
+            if (activeTab === 'sauce') {
+                sauceRef.current?.scrollIntoView({ behavior: 'smooth' })
+            }
+            if (activeTab === 'main') {
+                mainRef.current?.scrollIntoView({ behavior: 'smooth' })
+            }
         }
-        if (activeTab === 'sauce') {
-            sauceRef.current?.scrollIntoView({ behavior: 'smooth' })
-        }
-        if (activeTab === 'main') {
-            mainRef.current?.scrollIntoView({ behavior: 'smooth' })
-        }
-    }, [activeTab])
+    }, [activeTab, scroll])
 
     useEffect(() => {
         const options = {
             root: rootRef.current,
-            rootMargin: '0% 0% -620px 0%',
+            rootMargin: '0% 0% -600px 0%',
             target: 1
         };
 
 
+        // observer tracks upper small part of menu component to intersect with heading
+        // if heading is placed fully in this part, observer changes state of activeTab
+        // without timeout it cannot change state because previous useEffect with "ScrollIntoView"
+        // is set to "smooth" behaviour, it takes time to make current heading out of toggle area.
+        // If it was instantaneous, it wouldn't need timeout
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
-                if (entry.isIntersecting) {
+                if (entry.isIntersecting && scroll) {
                     const { target } = entry;
 
                     if (target === bunRef.current && activeTab !== "bun") {
@@ -45,6 +55,16 @@ export default function Menu({ingredients, activeTab, setActiveTab}: {
                     } else if (target === mainRef.current && activeTab !== "main") {
                         setActiveTab("main");
                     }
+                } else if( entry.isIntersecting ) {
+                    const delay = (ms: number) => new Promise(
+                        resolve => setTimeout(resolve, ms)
+                    );
+                    const setDelayedScroll = async () => {
+                        await delay(200);
+                        console.log('200ms passed');
+                        setScroll(true);
+                    };
+                    setDelayedScroll();
                 }
             });
         }, options);
@@ -70,7 +90,7 @@ export default function Menu({ingredients, activeTab, setActiveTab}: {
                 observer.unobserve(mainRef.current);
             }
         };
-    }, [activeTab]);
+    }, [activeTab, scroll]);
 
     return (
         <div className={styles.scroll} ref={rootRef}>
@@ -83,6 +103,8 @@ export default function Menu({ingredients, activeTab, setActiveTab}: {
                             <Component
                                 ingredient={ingredient}
                                 key={ingredient._id}
+                                setShowModal={(value : string) => setModalIndex(value)}
+                                showModal={modalIndex}
                             />
                         ))}
                 </div>
@@ -96,6 +118,8 @@ export default function Menu({ingredients, activeTab, setActiveTab}: {
                             <Component
                                 ingredient={ingredient}
                                 key={ingredient._id}
+                                setShowModal={(value : string) => setModalIndex(value)}
+                                showModal={modalIndex}
                             />
                         ))}
                 </div>
@@ -109,6 +133,8 @@ export default function Menu({ingredients, activeTab, setActiveTab}: {
                             <Component
                                 ingredient={ingredient}
                                 key={ingredient._id}
+                                setShowModal={(value : string) => setModalIndex(value)}
+                                showModal={modalIndex}
                             />
                         ))}
                 </div>

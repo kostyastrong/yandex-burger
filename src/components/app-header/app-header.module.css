@@ -42,5 +42,6 @@
 
 .personal_account {
     display: flex;
-    justify-content: center;
+    justify-content: left;
+    margin-left: 80px;
 }

@@ -31,13 +31,12 @@
     gap: 8px;
     text-decoration: none;
     align-content: center;
-    color: #F2F2F3;
+    color: rgba(242, 242, 243, 0.6);
     margin: 0 20px;
 }
 
 .link:hover {
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-    border-radius: 45px;
+    cursor: pointer;
 }
 
 .personal_account {

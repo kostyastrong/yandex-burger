@@ -1,7 +1,7 @@
 import {Ingredient} from "../utlis/types";
-import styles from "./modal-pfc.module.css";
+import styles from "./ingredient-details.module.css";
 
-export default function ModalPFC({ingredient}: { ingredient: Ingredient }) {  // protein fat carbohydrate
+export default function IngredientDetails({ingredient}: { ingredient: Ingredient }) {  // protein fat carbohydrate
     return (
         <div className={styles.pfc}>
             <h2 className={`${styles.title} text text_type_main-large mt-10 ml-10`}>Детали ингредиента</h2>

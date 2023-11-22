@@ -2,6 +2,11 @@ import {Button, ConstructorElement, CurrencyIcon, DragIcon} from '@ya.praktikum/
 import {Ingredient} from "../utlis/types";
 import styles from './burger-constructor.module.css';
 import {bunMock} from "./bun_mock";
+import {createPortal} from "react-dom";
+import Modal from "../modal/modal";
+import IngredientDetails from "../ingredient-details/ingredient-details";
+import {useState} from "react";
+import OrderDetails from "../order-details/order-details";
 
 export default function BurgerConstructor({ingredients, order}: {
     ingredients: Ingredient[],
@@ -11,6 +16,7 @@ export default function BurgerConstructor({ingredients, order}: {
     if (bun === undefined) {
         bun = bunMock;
     }
+    let [modal, setModal] = useState(false);
     return (
         <div className={styles.burger_constructor}>
             <div className={styles.burger}>
@@ -53,10 +59,14 @@ export default function BurgerConstructor({ingredients, order}: {
                     <p className="text text_type_digits-medium">1488</p>
                     <CurrencyIcon type="primary" />
                 </div>
-                <Button htmlType="button" type="primary" size="large">
+                <Button htmlType="button" type="primary" size="large" onClick={() => setModal(true)}>
                     Оформить заказ
                 </Button>
             </div>
+            {modal && createPortal(
+                <Modal children={<OrderDetails/>} onClose={() => setModal(false)}/>,
+                document.body
+            )}
         </div>
     );
 }

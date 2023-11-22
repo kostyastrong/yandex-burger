@@ -4,7 +4,7 @@ import {Counter, CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-com
 import styles from './component.module.css';
 import {createPortal} from "react-dom";
 import Modal from "../modal/modal";
-import ModalPFC from "../modal-pfc/modal-pfc";
+import IngredientDetails from "../ingredient-details/ingredient-details";
 
 export default function Component({ingredient, showModal, setShowModal}: {
     ingredient: Ingredient,
@@ -24,7 +24,7 @@ export default function Component({ingredient, showModal, setShowModal}: {
                 <p className={`${styles.subtitle} text text_type_main-default`}>{ingredient.name}</p>
             </div>
             {showModal === ingredient._id && createPortal(
-                <Modal children={<ModalPFC ingredient={ingredient} />} onClose={() => setShowModal("-1")}/>,
+                <Modal children={<IngredientDetails ingredient={ingredient} />} onClose={() => setShowModal("undefined")}/>,
                 document.body
             )}
         </div>

@@ -28,6 +28,8 @@
 
 .place_order {
     display: flex;
+    position: relative;
+    bottom: 0;
     justify-content: end;
     align-items: center;
     margin-top: 40px;

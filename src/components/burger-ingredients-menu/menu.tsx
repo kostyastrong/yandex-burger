@@ -14,7 +14,7 @@ export default function Menu({ingredients, activeTab, setActiveTab, scroll, setS
     const sauceRef = useRef<HTMLParagraphElement>(null);
     const mainRef = useRef<HTMLParagraphElement>(null);
     const rootRef = useRef<HTMLDivElement>(null);
-    const [modalIndex, setModalIndex] = useState("-1");
+    const [modalIndex, setModalIndex] = useState("undefined");
 
     useEffect(() => {
         if (!scroll) {  // for smoother behaviour, useEffect doesn't work when buttons in the tabBar weren't pushed

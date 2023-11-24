@@ -1,10 +1,8 @@
 import {Button, ConstructorElement, CurrencyIcon, DragIcon} from '@ya.praktikum/react-developer-burger-ui-components';
-import {Ingredient} from "../utlis/types";
+import {Ingredient} from "../../utils/types";
 import styles from './burger-constructor.module.css';
 import {bunMock} from "./bun_mock";
-import {createPortal} from "react-dom";
 import Modal from "../modal/modal";
-import IngredientDetails from "../ingredient-details/ingredient-details";
 import {useState} from "react";
 import OrderDetails from "../order-details/order-details";
 
@@ -16,27 +14,27 @@ export default function BurgerConstructor({ingredients, order}: {
     if (bun === undefined) {
         bun = bunMock;
     }
-    let [modal, setModal] = useState(false);
+    const [modal, setModal] = useState(false);
     return (
         <div className={styles.burger_constructor}>
             <div className={styles.burger}>
                 <ConstructorElement
-                    key={bun._id}
+                    key={"top"}
                     type="top"
                     isLocked={true}
-                    text={bun.name}
+                    text={`${bun.name} (верх)`}
                     price={bun.price}
                     thumbnail={bun.image}
+                    extraClass={"ml-8"}
                 />
                 <div className={styles.scroll}>
                     {ingredients
                         .filter((ingredient) => order.includes(ingredient._id))
                         .filter((ingredient) => ingredient.type !== 'bun')
                         .map((ingredient) => (
-                            <div className={styles.row}>
-                                <DragIcon type="primary" />
+                            <div key={ingredient._id} className={styles.swappable}>
+                                <DragIcon type="primary"/>
                                 <ConstructorElement
-                                    key={ingredient._id}
                                     isLocked={ingredient.type === 'bun'}
                                     text={ingredient.name}
                                     price={ingredient.price}
@@ -46,27 +44,27 @@ export default function BurgerConstructor({ingredients, order}: {
                         ))}
                 </div>
                 <ConstructorElement
-                    key={bun._id}
+                    key={"bottom"}
                     type="bottom"
                     isLocked={true}
-                    text={bun.name}
+                    text={`${bun.name} (низ)`}
                     price={bun.price}
                     thumbnail={bun.image}
+                    extraClass={"ml-8"}
                 />
             </div>
             <div className={styles.place_order}>
                 <div className={styles.price}>
                     <p className="text text_type_digits-medium">1488</p>
-                    <CurrencyIcon type="primary" />
+                    <CurrencyIcon type="primary"/>
                 </div>
                 <Button htmlType="button" type="primary" size="large" onClick={() => setModal(true)}>
                     Оформить заказ
                 </Button>
             </div>
-            {modal && createPortal(
-                <Modal children={<OrderDetails/>} onClose={() => setModal(false)}/>,
-                document.body
-            )}
+            {modal && <Modal onClose={() => setModal(false)}>
+                <OrderDetails/>
+            </Modal>}
         </div>
     );
 }

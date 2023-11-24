@@ -1,7 +1,7 @@
 import styles from './menu.module.css';
 import {useEffect, useRef, useState} from 'react';
 import Component from "../burger-ingredients-component/component";
-import {Ingredient} from "../utlis/types";
+import {Ingredient} from "../../utils/types";
 
 export default function Menu({ingredients, activeTab, setActiveTab, scroll, setScroll}: {
     ingredients: Ingredient[],
@@ -19,13 +19,13 @@ export default function Menu({ingredients, activeTab, setActiveTab, scroll, setS
     useEffect(() => {
         if (!scroll) {  // for smoother behaviour, useEffect doesn't work when buttons in the tabBar weren't pushed
             if (activeTab === 'bun') {
-                bunRef.current?.scrollIntoView({ behavior: 'smooth' })
+                bunRef.current?.scrollIntoView({behavior: 'smooth'})
             }
             if (activeTab === 'sauce') {
-                sauceRef.current?.scrollIntoView({ behavior: 'smooth' })
+                sauceRef.current?.scrollIntoView({behavior: 'smooth'})
             }
             if (activeTab === 'main') {
-                mainRef.current?.scrollIntoView({ behavior: 'smooth' })
+                mainRef.current?.scrollIntoView({behavior: 'smooth'})
             }
         }
     }, [activeTab, scroll])
@@ -46,7 +46,7 @@ export default function Menu({ingredients, activeTab, setActiveTab, scroll, setS
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting && scroll) {
-                    const { target } = entry;
+                    const {target} = entry;
 
                     if (target === bunRef.current && activeTab !== "bun") {
                         setActiveTab("bun");
@@ -55,7 +55,7 @@ export default function Menu({ingredients, activeTab, setActiveTab, scroll, setS
                     } else if (target === mainRef.current && activeTab !== "main") {
                         setActiveTab("main");
                     }
-                } else if( entry.isIntersecting ) {
+                } else if (entry.isIntersecting) {
                     const delay = (ms: number) => new Promise(
                         resolve => setTimeout(resolve, ms)
                     );
@@ -94,51 +94,51 @@ export default function Menu({ingredients, activeTab, setActiveTab, scroll, setS
 
     return (
         <div className={styles.scroll} ref={rootRef}>
-            <div>
+            <section>
                 <h3 className="text text_type_main-medium" ref={bunRef}>Булки</h3>
                 <div className={styles.list}>
                     {ingredients
-                        .filter((ingredient: Ingredient) => ingredient.type === 'bun')
-                        .map((ingredient: Ingredient) => (
+                        .filter((ingredient) => ingredient.type === 'bun')
+                        .map((ingredient) => (
                             <Component
                                 ingredient={ingredient}
                                 key={ingredient._id}
-                                setShowModal={(value : string) => setModalIndex(value)}
+                                setShowModal={(value: string) => setModalIndex(value)}
                                 showModal={modalIndex}
                             />
                         ))}
                 </div>
-            </div>
-            <div>
+            </section>
+            <section>
                 <h3 className="text text_type_main-medium" ref={sauceRef}>Соусы</h3>
                 <div className={styles.list}>
                     {ingredients
-                        .filter((ingredient: Ingredient) => ingredient.type === 'sauce')
-                        .map((ingredient: Ingredient) => (
+                        .filter((ingredient) => ingredient.type === 'sauce')
+                        .map((ingredient) => (
                             <Component
                                 ingredient={ingredient}
                                 key={ingredient._id}
-                                setShowModal={(value : string) => setModalIndex(value)}
+                                setShowModal={(value: string) => setModalIndex(value)}
                                 showModal={modalIndex}
                             />
                         ))}
                 </div>
-            </div>
-            <div>
+            </section>
+            <section>
                 <h3 className="text text_type_main-medium" ref={mainRef}>Начинки</h3>
                 <div className={styles.list}>
                     {ingredients
-                        .filter((ingredient: Ingredient) => ingredient.type === 'main')
-                        .map((ingredient: Ingredient) => (
+                        .filter((ingredient) => ingredient.type === 'main')
+                        .map((ingredient) => (
                             <Component
                                 ingredient={ingredient}
                                 key={ingredient._id}
-                                setShowModal={(value : string) => setModalIndex(value)}
+                                setShowModal={(value: string) => setModalIndex(value)}
                                 showModal={modalIndex}
                             />
                         ))}
                 </div>
-            </div>
+            </section>
         </div>
     );
 }

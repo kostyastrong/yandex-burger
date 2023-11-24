@@ -1,4 +1,4 @@
-import {Ingredient} from "../utlis/types";
+import {Ingredient} from "../../utils/types";
 import styles from "./ingredient-details.module.css";
 
 export default function IngredientDetails({ingredient}: { ingredient: Ingredient }) {  // protein fat carbohydrate

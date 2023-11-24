@@ -1,13 +1,12 @@
 .burger_constructor {
     height: 650px;
     margin-top: 100px;
-    max-width: 570px;
+    width: 600px;
 }
 
 .burger {
     display: flex;
     flex-direction: column;
-    align-items: end;
     gap: 10px;
     max-height: 620px;
 }
@@ -19,8 +18,8 @@
     gap: 10px;
 }
 
-.row {
-    gap: 10px;
+.swappable {
+    gap: 8px;
     align-items: center;
     display: flex;
     flex-direction: row;
@@ -33,6 +32,7 @@
     justify-content: end;
     align-items: center;
     margin-top: 40px;
+    margin-right: 20px;
 }
 
 .price {

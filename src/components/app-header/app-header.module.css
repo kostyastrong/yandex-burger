@@ -1,6 +1,6 @@
 .header {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1.1fr 1fr 1.1fr;
     background-color: #1C1C21;
     max-width: 1920px;
     min-height: 88px;

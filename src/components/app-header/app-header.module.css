@@ -1,0 +1,46 @@
+.header {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1.1fr;
+    background-color: #1C1C21;
+    max-width: 1920px;
+    min-height: 88px;
+    margin: 0 auto;
+}
+
+.choices {
+    display: flex;
+    justify-content: right;
+    gap: 8px;
+}
+
+.main_logo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.navigation {
+    display: flex;
+    justify-content: space-between;
+}
+
+.link {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    gap: 8px;
+    text-decoration: none;
+    align-content: center;
+    color: rgba(242, 242, 243, 0.6);
+    margin: 0 20px;
+}
+
+.link:hover {
+    cursor: pointer;
+}
+
+.personal_account {
+    display: flex;
+    justify-content: left;
+    margin-left: 80px;
+}

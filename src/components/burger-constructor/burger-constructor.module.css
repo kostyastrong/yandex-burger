@@ -1,0 +1,43 @@
+.burger_constructor {
+    height: 650px;
+    margin-top: 100px;
+    width: 600px;
+}
+
+.burger {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 620px;
+}
+
+.scroll {
+    display: flex;
+    overflow-y: auto;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.swappable {
+    gap: 8px;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+}
+
+.place_order {
+    display: flex;
+    position: relative;
+    bottom: 0;
+    justify-content: end;
+    align-items: center;
+    margin-top: 40px;
+    margin-right: 20px;
+}
+
+.price {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-right: 40px;
+}

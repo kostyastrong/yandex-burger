@@ -1,0 +1,11 @@
+.title {
+    justify-content: left;
+    width: 90%;
+    margin-top: 40px;
+}
+
+.burger_ingredients {
+    display: flex;
+    flex-direction: column;
+    width: 600px;
+}

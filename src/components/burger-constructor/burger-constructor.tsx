@@ -1,22 +1,43 @@
 import {Button, ConstructorElement, CurrencyIcon, DragIcon} from '@ya.praktikum/react-developer-burger-ui-components';
-import {Ingredient} from "../../utils/types";
+import {dndTypes, Ingredient} from "../../utils/types";
 import styles from './burger-constructor.module.css';
-import {bunMock} from "./bun_mock";
 import Modal from "../modal/modal";
 import {useState} from "react";
 import OrderDetails from "../order-details/order-details";
+import {useDispatch, useSelector} from "react-redux";
+import {useDrop} from "react-dnd";
+import {chosenIngredientsState, pushBack} from "../../services/slices/chosen-ingredients";
+import {availableIngredientsState} from "../../services/slices/available-ingredients";
+import {DndItemMenu} from "../../utils/classes";
 
-export default function BurgerConstructor({ingredients, order}: {
-    ingredients: Ingredient[],
-    order: string[]
-}) {
-    let bun = ingredients.find((ingredient) => ingredient.type === 'bun');
-    if (bun === undefined) {
-        bun = bunMock;
+export default function BurgerConstructor() {
+    const ingredients: Ingredient[] = useSelector((state: {
+        availableIngredients: availableIngredientsState
+    }) => state.availableIngredients.ingredients);
+
+    // state consists of bun and ingredients with their individual constructor id-s
+    const chosenIngredients: chosenIngredientsState = useSelector((state: {
+        chosenIngredients: chosenIngredientsState
+    }) => state.chosenIngredients);
+    const dispatch = useDispatch();
+
+
+    const order = ingredients.map((ingredient) => ingredient["_id"])
+    let bun = chosenIngredients.bun;
+    if (chosenIngredients.bun === undefined) {
     }
+
+
+    const [collectedProps, drop] = useDrop(() => ({
+        accept: dndTypes.MENU_ITEM,
+        drop: (item: DndItemMenu, monitor) => {
+            console.log(`Dropped item: ${JSON.stringify(item)}`);
+            dispatch(pushBack(item.getIngredient()));
+        },
+    }))
     const [modal, setModal] = useState(false);
     return (
-        <div className={styles.burger_constructor}>
+        <div ref={drop} className={styles.burger_constructor}>
             <div className={styles.burger}>
                 <ConstructorElement
                     key={"top"}
@@ -28,7 +49,7 @@ export default function BurgerConstructor({ingredients, order}: {
                     extraClass={"ml-8"}
                 />
                 <div className={styles.scroll}>
-                    {ingredients
+                    {chosenIngredients.ingredients
                         .filter((ingredient) => order.includes(ingredient._id))
                         .filter((ingredient) => ingredient.type !== 'bun')
                         .map((ingredient) => (
@@ -39,6 +60,9 @@ export default function BurgerConstructor({ingredients, order}: {
                                     text={ingredient.name}
                                     price={ingredient.price}
                                     thumbnail={ingredient.image}
+                                    handleClose={() => {
+                                        console.log("close " + ingredient._id);
+                                    }}
                                 />
                             </div>
                         ))}

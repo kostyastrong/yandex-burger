@@ -2,9 +2,9 @@ import styles from './menu.module.css';
 import {useEffect, useRef, useState} from 'react';
 import Component from "../burger-ingredients-component/component";
 import {Ingredient} from "../../utils/types";
+import {useSelector} from "react-redux";
 
-export default function Menu({ingredients, activeTab, setActiveTab, scroll, setScroll}: {
-    ingredients: Ingredient[],
+export default function Menu({activeTab, setActiveTab, scroll, setScroll}: {
     activeTab: string,
     scroll: boolean,
     setActiveTab: (value: string) => void,
@@ -91,6 +91,9 @@ export default function Menu({ingredients, activeTab, setActiveTab, scroll, setS
             }
         };
     }, [activeTab, scroll]);
+    const ingredients = useSelector((state: {
+        availableIngredients: { ingredients: Ingredient[] }
+    }) => state.availableIngredients.ingredients);
 
     return (
         <div className={styles.scroll} ref={rootRef}>

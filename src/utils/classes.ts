@@ -9,5 +9,4 @@ export class DndItemMenu {
     getIngredient(): Ingredient {
         return this.ingredient;
     }
-
 }

@@ -22,5 +22,5 @@ export type IngredientChangePosition = {
 
 export const dndTypes = {
     MENU_ITEM: "MENU_ITEM",
+    CONSTRUCTOR_ITEM: "CONSTRUCTOR_ITEM",
 }
-

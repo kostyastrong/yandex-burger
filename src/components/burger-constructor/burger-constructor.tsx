@@ -1,33 +1,26 @@
 import {Button, ConstructorElement, CurrencyIcon, DragIcon} from '@ya.praktikum/react-developer-burger-ui-components';
-import {dndTypes, Ingredient} from "../../utils/types";
+import {dndTypes} from "../../utils/types";
 import styles from './burger-constructor.module.css';
 import Modal from "../modal/modal";
 import {useState} from "react";
 import OrderDetails from "../order-details/order-details";
 import {useDispatch, useSelector} from "react-redux";
 import {useDrop} from "react-dnd";
-import {chosenIngredientsState, pushBack} from "../../services/slices/chosen-ingredients";
-import {availableIngredientsState} from "../../services/slices/available-ingredients";
+import {ChosenIngredientsState, pushBack, removeWithId} from "../../services/slices/chosen-ingredients";
 import {DndItemMenu} from "../../utils/classes";
 
 export default function BurgerConstructor() {
-    const ingredients: Ingredient[] = useSelector((state: {
-        availableIngredients: availableIngredientsState
-    }) => state.availableIngredients.ingredients);
 
-    // state consists of bun and ingredients with their individual constructor id-s
-    const chosenIngredients: chosenIngredientsState = useSelector((state: {
-        chosenIngredients: chosenIngredientsState
+    // state consists of a bun and ingredients with their individual constructor id-s
+    const chosenIngredients: ChosenIngredientsState = useSelector((state: {
+        chosenIngredients: ChosenIngredientsState
     }) => state.chosenIngredients);
     const dispatch = useDispatch();
 
 
-    const order = ingredients.map((ingredient) => ingredient["_id"])
     let bun = chosenIngredients.bun;
-    if (chosenIngredients.bun === undefined) {
-    }
 
-
+    // listen to a dropped item
     const [collectedProps, drop] = useDrop(() => ({
         accept: dndTypes.MENU_ITEM,
         drop: (item: DndItemMenu, monitor) => {
@@ -50,10 +43,9 @@ export default function BurgerConstructor() {
                 />
                 <div className={styles.scroll}>
                     {chosenIngredients.ingredients
-                        .filter((ingredient) => order.includes(ingredient._id))
                         .filter((ingredient) => ingredient.type !== 'bun')
                         .map((ingredient) => (
-                            <div key={ingredient._id} className={styles.swappable}>
+                            <div key={ingredient.constructor_id} className={styles.swappable}>
                                 <DragIcon type="primary"/>
                                 <ConstructorElement
                                     isLocked={ingredient.type === 'bun'}
@@ -61,7 +53,8 @@ export default function BurgerConstructor() {
                                     price={ingredient.price}
                                     thumbnail={ingredient.image}
                                     handleClose={() => {
-                                        console.log("close " + ingredient._id);
+                                        dispatch(removeWithId(ingredient.constructor_id));
+                                        console.log("removed " + ingredient.constructor_id);
                                     }}
                                 />
                             </div>

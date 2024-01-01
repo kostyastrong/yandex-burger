@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
 import availableIngredientsReducer from '../slices/available-ingredients';
 import chosenIngredientsReducer from '../slices/chosen-ingredients';
+// import numberOfIngredient from "../slices/number-of-ingredient";
 
 // When we pass in an object like {counter: counterReducer}, that says that
 // we want to have a state.counter section of our Redux state object, and that
@@ -10,6 +11,7 @@ import chosenIngredientsReducer from '../slices/chosen-ingredients';
 const rootReducer = combineReducers({
     availableIngredients: availableIngredientsReducer,
     chosenIngredients: chosenIngredientsReducer,
+    // numberOfIngredient: numberOfIngredient,
 });
 
 export default rootReducer;

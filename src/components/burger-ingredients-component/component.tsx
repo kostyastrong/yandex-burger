@@ -1,4 +1,3 @@
-import {useState} from "react";
 import {dndTypes, Ingredient} from "../../utils/types";
 import {Counter, CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './component.module.css';
@@ -6,6 +5,8 @@ import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
 import {useDrag} from "react-dnd";
 import {DndItemMenu} from "../../utils/classes";
+import {useSelector} from "react-redux";
+import {ChosenIngredientsState} from "../../services/slices/chosen-ingredients";
 
 // components which are shown
 export default function Component({ingredient, showModal, setShowModal}: {
@@ -13,7 +14,15 @@ export default function Component({ingredient, showModal, setShowModal}: {
     showModal: string,
     setShowModal: (value: string) => void
 }) {
-    const [counter, setCounter] = useState(0);
+    // map<string, number> doesn't serialize well, but docs has similar example:
+    // https://redux.js.org/tutorials/essentials/part-4-using-data
+    // const post = useSelector(state =>
+    //     state.posts.find(post => post.id === postId)
+    //   )
+    // by this they keep tracking each post individually, though it is less efficient than having map
+    const counter: number = useSelector((state: {
+        chosenIngredients: ChosenIngredientsState
+    }) => state.chosenIngredients.ingredients.filter((chosenIngredient) => chosenIngredient._id === ingredient._id).length);
 
     const [collected, drag, dragPreview] = useDrag(() => ({
         type: dndTypes.MENU_ITEM,

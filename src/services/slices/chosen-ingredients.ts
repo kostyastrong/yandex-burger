@@ -30,6 +30,7 @@ const chosenIngredients = createSlice({
             }
         },
         changePosition: (state, action: PayloadAction<MoveInfo>) => {
+            state.actionNumber += 1;
             let request = action.payload;  // Ingredient
             // find index of requested ingredient
             const oldIndex = request.old_index;
@@ -38,12 +39,12 @@ const chosenIngredients = createSlice({
                 console.error("no ingredient with id " + request.old_index + " are found ");
                 return;
             }
-            console.log("Start")
+            console.log("Start " + state.actionNumber)
             // deep copy, structuredClone doesn't work with Proxy objects, another option is to use JSON.parse and JSON.stringify
             const newIngredients = [...state.ingredients];
             const ingredient = newIngredients.splice(oldIndex, 1)[0];
-            console.log("state: " + JSON.stringify(state.ingredients.map((i) => i.constructor_id)))
-            console.log("newIngredients: " + newIngredients.map((i: IngredientConstructor) => i.constructor_id))
+            // console.log("state: " + JSON.stringify(state.ingredients.map((i) => i.constructor_id)))
+            // console.log("newIngredients: " + newIngredients.map((i: IngredientConstructor) => i.constructor_id))
             // console.log("ingredient: " + JSON.stringify(ingredient));
             // console.log("oldIndex: " + oldIndex + " newIndex: " + newIndex);
             newIngredients.splice(newIndex, 0, ingredient);

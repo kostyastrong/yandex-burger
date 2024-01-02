@@ -1,8 +1,8 @@
 import styles from "./sortable-component.module.css";
 import {ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
-import {changePosition, ChosenIngredientsState, removeWithId} from "../../services/slices/chosen-ingredients";
-import {dndTypes, IngredientConstructor} from "../../utils/types";
-import {useDispatch, useSelector} from "react-redux";
+import {removeWithId} from "../../services/slices/chosen-ingredients";
+import {dndTypes, IngredientConstructor, MoveInfo} from "../../utils/types";
+import {useDispatch} from "react-redux";
 import {useDrag, useDrop} from "react-dnd";
 
 interface Item {
@@ -10,14 +10,17 @@ interface Item {
     originalIndex: number;
 }
 
-// list with drag and drop items, as in docs: https://react-dnd.github.io/react-dnd/examples/sortable/simple
-export default function SortableComponent(ingredient: IngredientConstructor) {
-    const dispatch = useDispatch();
-    const chosenIngredients: ChosenIngredientsState = useSelector((state: {
-        chosenIngredients: ChosenIngredientsState
-    }) => state.chosenIngredients);
+interface SortableComponentProps {
+    findIndexIngredient: (constructorId: number) => number;
+    moveIngredient: (moveInfo: MoveInfo) => void;
+    ingredient: IngredientConstructor;
+}
 
-    const originalIndex = chosenIngredients.ingredients.findIndex((chosenIngredient) => chosenIngredient.constructor_id === ingredient.constructor_id);
+// list with drag and drop items, as in docs: https://react-dnd.github.io/react-dnd/examples/sortable/simple
+export default function SortableComponent(props: SortableComponentProps) {
+    const {findIndexIngredient, moveIngredient, ingredient} = props;
+    const originalIndex = findIndexIngredient(ingredient.constructor_id);
+    const dispatch = useDispatch();
     const [collected, drag] = useDrag({
         type: dndTypes.CONSTRUCTOR_ITEM,
         item: {ingredient, originalIndex},
@@ -29,34 +32,38 @@ export default function SortableComponent(ingredient: IngredientConstructor) {
             // if the item wasn't dropped, return to previous position
             if (!didDrop) {
                 console.log("dropped outside");
-                const oldIndex = chosenIngredients.ingredients.findIndex((i) => i.constructor_id === item.ingredient.constructor_id);
+                const oldIndex = findIndexIngredient(item.ingredient.constructor_id)
                 const moveInfo = {
                     old_index: oldIndex, // the index of the ingredient to be moved
                     new_index: item.originalIndex // the constructor_id of the ingredient above the one is being hovered
                 };
-                dispatch(changePosition(moveInfo));
+                moveIngredient(moveInfo);
             }
         }
-    }, [chosenIngredients]);
+    }, [moveIngredient, findIndexIngredient, ingredient.constructor_id, originalIndex]);
 
     const [, drop] = useDrop({
         accept: dndTypes.CONSTRUCTOR_ITEM,
         hover({ingredient: draggedIngredient}: Item, monitor) {
+            console.log("SOMETHING IS HAPPENING 222")
             if (draggedIngredient.constructor_id !== ingredient.constructor_id) {
+                console.log("Dragged, hovered" + draggedIngredient.constructor_id + " " + ingredient.constructor_id);
                 // ingredient is underneath, item (draggedIngredient) is above
-                const oldIndex = chosenIngredients.ingredients.findIndex((i) => i.constructor_id === draggedIngredient.constructor_id);
-                const newIndex = chosenIngredients.ingredients.findIndex((i) => i.constructor_id === ingredient.constructor_id);
+                const oldIndex = findIndexIngredient(draggedIngredient.constructor_id);
+                const newIndex = findIndexIngredient(ingredient.constructor_id);
 
                 const moveInfo = {
                     old_index: oldIndex,
                     new_index: newIndex
                 };
-                dispatch(changePosition(moveInfo));
+                moveIngredient(moveInfo)
             }
         },
-    }, [chosenIngredients]);
+    }, [moveIngredient, findIndexIngredient, ingredient]);
+    console.log("SOMETHING IS HAPPENING 111")
 
     const opacity = collected.isDragging ? 0 : 1
+
     return (
         <div style={{opacity}} ref={(node) => drag(drop(node))} className={styles.swappable}>
             <DragIcon type="primary"/>

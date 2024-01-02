@@ -2,6 +2,7 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {Ingredient, IngredientChangePosition, IngredientConstructor} from "../../utils/types";
 import {bunMock} from "../../components/burger-constructor/bun_mock";
 
+
 export interface ChosenIngredientsState {
     ingredients: IngredientConstructor[],
     bun: Ingredient,
@@ -29,56 +30,33 @@ const chosenIngredients = createSlice({
         },
         changePosition: (state, action: PayloadAction<IngredientChangePosition>) => {
             let request = action.payload;  // Ingredient
-            let changeIndex = state.ingredients.findIndex((ingredient) => ingredient.constructor_id === request.constructor_id);
-            // first remove, then insert
-            if (changeIndex === -1) {
-                console.error("no ingredient with id " + request.constructor_id + " are found ");
+            // find index of requested ingredient
+            let oldIndex = state.ingredients.findIndex((ingredient) => ingredient.constructor_id === request.dragged_constructor_id);
+            if (oldIndex === -1) {
+                console.error("no ingredient with id " + request.dragged_constructor_id + " are found ");
                 return;
             }
-            let aboveIndex = request.above_constructor_id === null ? -1 : state.ingredients.findIndex((ingredient) => ingredient.constructor_id === request.above_constructor_id);
-
+            const newIndex = request.hovered_constructor_id === null ? 0 : state.ingredients.findIndex((ingredient) => ingredient.constructor_id === request.hovered_constructor_id);
+            const ingredient = state.ingredients.splice(oldIndex, 1)[0];
+            console.log("oldIndex: " + oldIndex + " newIndex: " + newIndex);
+            state.ingredients.splice(newIndex, 0, ingredient);
         },
 
+        // remove with constructor id
         removeWithId: (state, action: PayloadAction<number>) => {
-            // decrement if using map
+            // insert decrement operation if using map
             state.ingredients = state.ingredients.filter((ingredient) => ingredient.constructor_id !== action.payload);
         },
+
+        // remove with index in array
         removeAt: (state, action: PayloadAction<number>) => {
             state.ingredients.splice(action.payload, 1);
         },
-        // initFromIngredients: (state, action: PayloadAction<Ingredient[]>) => {
-        //     for (const ingredient of action.payload) {
-        //         state.amount.set(ingredient._id, 0);
-        //     }
-        //     state.amount.set(bunMock._id, 1);
-        // },
-        // updateMap: (state, action: PayloadAction<{ key: string; value: number }>) => {
-        //     const {key, value} = action.payload;
-        //     state.amount.set(key, value);
-        // },
-        // increment: (state, action: PayloadAction<string>) => {
-        //     if (!state.amount.has(action.payload)) {
-        //         console.log("no ingredient with id " + action.payload + " are found to increment value, so we created one with amount = 0");
-        //         state.amount.set(action.payload, 0);
-        //     }
-        //     state.amount.set(action.payload, state.amount.get(action.payload)! + 1);
-        // },
-        // decrement: (state, action: PayloadAction<string>) => {
-        //     if (!state.amount.has(action.payload)) {
-        //         console.log("error, no ingredient with id " + action.payload + " are found to decrement value, so we created one with amount = 0");
-        //         state.amount.set(action.payload, 0);
-        //     }
-        //     state.amount.set(action.payload, state.amount.get(action.payload)! - 1);
-        // }
     },
 });
 
 export const {
     pushBack,
-    // increment,
-    // decrement,
-    // updateMap,
-    // initFromIngredients,
     changePosition,
     removeWithId
 } = chosenIngredients.actions;

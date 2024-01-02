@@ -31,7 +31,7 @@ export default function Component({ingredient, showModal, setShowModal}: {
             console.log("drag ended, no actions on drag");
         }
         // collect prop is unnecessary, because application doesn't change when dragging of a menu component begins
-    }))
+    }), [])
     return (
         <div ref={drag}>
             <div className={styles.component} onClick={() => setShowModal(ingredient._id)}>

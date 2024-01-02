@@ -16,8 +16,8 @@ export type Ingredient = {
 export type IngredientConstructor = Ingredient & { constructor_id: number }
 
 export type IngredientChangePosition = {
-    constructor_id: number,
-    above_constructor_id: number | null,  // null if there's no else above the position
+    dragged_constructor_id: number,
+    hovered_constructor_id: number,
 }
 
 export const dndTypes = {

@@ -1,13 +1,14 @@
-import {Button, ConstructorElement, CurrencyIcon, DragIcon} from '@ya.praktikum/react-developer-burger-ui-components';
-import {dndTypes} from "../../utils/types";
+import {Button, ConstructorElement, CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
+import {dndTypes, IngredientConstructor} from "../../utils/types";
 import styles from './burger-constructor.module.css';
 import Modal from "../modal/modal";
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import OrderDetails from "../order-details/order-details";
 import {useDispatch, useSelector} from "react-redux";
 import {useDrop} from "react-dnd";
-import {ChosenIngredientsState, pushBack, removeWithId} from "../../services/slices/chosen-ingredients";
+import {ChosenIngredientsState, pushBack} from "../../services/slices/chosen-ingredients";
 import {DndItemMenu} from "../../utils/classes";
+import SortableComponent from "../burger-constructor-component/sortable-component";
 
 export default function BurgerConstructor() {
 
@@ -27,8 +28,26 @@ export default function BurgerConstructor() {
             console.log(`Dropped item: ${JSON.stringify(item)}`);
             dispatch(pushBack(item.getIngredient()));
         },
-    }))
+    }), [])
     const [modal, setModal] = useState(false);
+    const renderSortableComponent = useCallback(
+        (ingredient: IngredientConstructor) => {
+            return (
+                <SortableComponent {...ingredient} key={ingredient.constructor_id}/>
+            )
+        },
+        [],
+    )
+    const findIngredient = useCallback(
+        (constructorId: number) => {
+            const ingredient = chosenIngredients.ingredients.filter((ingredient) => ingredient.constructor_id === constructorId)[0];
+            return {
+                ingredient,
+                index: chosenIngredients.ingredients.indexOf(ingredient),
+            }
+        },
+        [chosenIngredients.ingredients],
+    )
     return (
         <div ref={drop} className={styles.burger_constructor}>
             <div className={styles.burger}>
@@ -44,21 +63,7 @@ export default function BurgerConstructor() {
                 <div className={styles.scroll}>
                     {chosenIngredients.ingredients
                         .filter((ingredient) => ingredient.type !== 'bun')
-                        .map((ingredient) => (
-                            <div key={ingredient.constructor_id} className={styles.swappable}>
-                                <DragIcon type="primary"/>
-                                <ConstructorElement
-                                    isLocked={ingredient.type === 'bun'}
-                                    text={ingredient.name}
-                                    price={ingredient.price}
-                                    thumbnail={ingredient.image}
-                                    handleClose={() => {
-                                        dispatch(removeWithId(ingredient.constructor_id));
-                                        console.log("removed " + ingredient.constructor_id);
-                                    }}
-                                />
-                            </div>
-                        ))}
+                        .map((ingredient) => renderSortableComponent(ingredient))}
                 </div>
                 <ConstructorElement
                     key={"bottom"}

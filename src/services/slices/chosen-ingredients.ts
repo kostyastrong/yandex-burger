@@ -31,6 +31,9 @@ const chosenIngredients = createSlice({
         },
         changePosition: (state, action: PayloadAction<MoveInfo>) => {
             state.actionNumber += 1;
+            if (state.actionNumber % 5 !== 0) {
+                return;
+            }
             let request = action.payload;  // Ingredient
             // find index of requested ingredient
             const oldIndex = request.old_index;
@@ -48,8 +51,8 @@ const chosenIngredients = createSlice({
             // console.log("ingredient: " + JSON.stringify(ingredient));
             // console.log("oldIndex: " + oldIndex + " newIndex: " + newIndex);
             newIngredients.splice(newIndex, 0, ingredient);
-            console.log("state: " + JSON.stringify(state.ingredients.map((i) => i.constructor_id)))
-            console.log("newIngredients: " + newIngredients.map((i: IngredientConstructor) => i.constructor_id))
+            // console.log("state: " + JSON.stringify(state.ingredients.map((i) => i.constructor_id)))
+            // console.log("newIngredients: " + newIngredients.map((i: IngredientConstructor) => i.constructor_id))
             state.ingredients = newIngredients;
             console.log("End")
         },

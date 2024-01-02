@@ -18,7 +18,6 @@ export default function BurgerConstructor() {
     }) => state.chosenIngredients);
     const dispatch = useDispatch();
 
-
     let bun = chosenIngredients.bun;
 
     // listen to a dropped item
@@ -58,7 +57,7 @@ export default function BurgerConstructor() {
                     text={`${bun.name} (верх)`}
                     price={bun.price}
                     thumbnail={bun.image}
-                    extraClass={"ml-8"}
+                    extraClass={"ml-8 mb-2"}
                 />
                 <div className={styles.scroll}>
                     {chosenIngredients.ingredients

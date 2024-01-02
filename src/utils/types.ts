@@ -15,9 +15,9 @@ export type Ingredient = {
 
 export type IngredientConstructor = Ingredient & { constructor_id: number }
 
-export type IngredientChangePosition = {
-    dragged_constructor_id: number,
-    hovered_constructor_id: number,
+export type MoveInfo = {
+    old_index: number,
+    new_index: number,
 }
 
 export const dndTypes = {

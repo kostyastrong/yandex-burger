@@ -1,11 +1,12 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {Ingredient, IngredientChangePosition, IngredientConstructor} from "../../utils/types";
+import {Ingredient, IngredientConstructor, MoveInfo} from "../../utils/types";
 import {bunMock} from "../../components/burger-constructor/bun_mock";
 
 
 export interface ChosenIngredientsState {
     ingredients: IngredientConstructor[],
     bun: Ingredient,
+    // to count number of calls:
     actionNumber: number,
 }
 
@@ -28,18 +29,28 @@ const chosenIngredients = createSlice({
                 state.ingredients.push({...ingredient, constructor_id: state.actionNumber});
             }
         },
-        changePosition: (state, action: PayloadAction<IngredientChangePosition>) => {
+        changePosition: (state, action: PayloadAction<MoveInfo>) => {
             let request = action.payload;  // Ingredient
             // find index of requested ingredient
-            let oldIndex = state.ingredients.findIndex((ingredient) => ingredient.constructor_id === request.dragged_constructor_id);
+            const oldIndex = request.old_index;
+            const newIndex = request.new_index;
             if (oldIndex === -1) {
-                console.error("no ingredient with id " + request.dragged_constructor_id + " are found ");
+                console.error("no ingredient with id " + request.old_index + " are found ");
                 return;
             }
-            const newIndex = request.hovered_constructor_id === null ? 0 : state.ingredients.findIndex((ingredient) => ingredient.constructor_id === request.hovered_constructor_id);
-            const ingredient = state.ingredients.splice(oldIndex, 1)[0];
-            console.log("oldIndex: " + oldIndex + " newIndex: " + newIndex);
-            state.ingredients.splice(newIndex, 0, ingredient);
+            console.log("Start")
+            // deep copy, structuredClone doesn't work with Proxy objects, another option is to use JSON.parse and JSON.stringify
+            const newIngredients = [...state.ingredients];
+            const ingredient = newIngredients.splice(oldIndex, 1)[0];
+            console.log("state: " + JSON.stringify(state.ingredients.map((i) => i.constructor_id)))
+            console.log("newIngredients: " + newIngredients.map((i: IngredientConstructor) => i.constructor_id))
+            // console.log("ingredient: " + JSON.stringify(ingredient));
+            // console.log("oldIndex: " + oldIndex + " newIndex: " + newIndex);
+            newIngredients.splice(newIndex, 0, ingredient);
+            console.log("state: " + JSON.stringify(state.ingredients.map((i) => i.constructor_id)))
+            console.log("newIngredients: " + newIngredients.map((i: IngredientConstructor) => i.constructor_id))
+            state.ingredients = newIngredients;
+            console.log("End")
         },
 
         // remove with constructor id

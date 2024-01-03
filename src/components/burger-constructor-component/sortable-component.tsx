@@ -27,11 +27,12 @@ export default function SortableComponent(props: SortableComponentProps) {
         },
         [chosenIngredients.ingredients],
     )
-    const ingredient = chosenIngredients.ingredients[findIndexIngredient(props.constructorId)];
     const dispatch = useDispatch();
+    const ingredient = chosenIngredients.ingredients[findIndexIngredient(props.constructorId)];
+    const originalIndex = findIndexIngredient(ingredient.constructor_id)
     const [collected, drag] = useDrag({
         type: dndTypes.CONSTRUCTOR_ITEM,
-        item: {constructorId: ingredient.constructor_id, originalIndex: findIndexIngredient(ingredient.constructor_id)},
+        item: {constructorId: ingredient.constructor_id, originalIndex: originalIndex},
         collect: (monitor: any) => ({
             isDragging: monitor.isDragging(),
         }),
@@ -39,29 +40,33 @@ export default function SortableComponent(props: SortableComponentProps) {
             const didDrop = monitor.didDrop();
             // if the item wasn't dropped, return to previous position
             if (!didDrop) {
-                console.log("dropped outside");
                 const oldIndex = findIndexIngredient(item.constructorId)
                 const moveInfo = {
                     old_index: oldIndex, // the index of the ingredient to be moved
                     new_index: item.originalIndex // the constructor_id of the ingredient above the one is being hovered
                 };
-                dispatch(changePosition(moveInfo));
+                console.log("dropped outside, old index: " + oldIndex + " new index: " + item.originalIndex);
+                // read drop function instructions
+                for (let i = 0; i < 5; ++i) {
+                    dispatch(changePosition(moveInfo));
+                }
             }
         }
-    }, [chosenIngredients, ingredient.constructor_id]);
+    }, [chosenIngredients, ingredient.constructor_id, originalIndex]);
 
     const [, drop] = useDrop({
         accept: dndTypes.CONSTRUCTOR_ITEM,
         hover({constructorId: draggedIngredientId}: Item, monitor) {
             console.log("HOVER IS TRIGGERED")
-            // for some reason, the ingredient.constructor_id doesn't change and it's being triggered again and again
-            // for example, we can drag 1 item over 2 and it detects this. It changes position of dragged element to the position of 2
-            // everything is fine, render completes in BurgerConstructor component.
+            // for some reason, the ingredient.constructor_id doesn't change and it's being triggered again and again.
+            // for example, we can drag 1 item over 2 and it detects this. It changes position of dragged 1st element
+            // to the position of 2nd, everything is fine, render completes in BurgerConstructor component.
             // Then, for some reason, hover is triggered again with the same parameters 1 and 2 and swaps everything back.
             // to overcome this issue the dispatch is performed every 5th time with the following lines of code:
             // if (state.actionNumber % 5 !== 0) {
             //   return;
             // }
+            // with this bug, drag element calls dispatch 5 times to return item back if it was dropped outside
             if (draggedIngredientId !== ingredient.constructor_id) {
                 console.log("Dragged, hovered: " + draggedIngredientId + " " + ingredient.constructor_id);
                 // ingredient is underneath, item (draggedIngredient) is above
@@ -72,7 +77,7 @@ export default function SortableComponent(props: SortableComponentProps) {
                     old_index: oldIndex,
                     new_index: newIndex
                 };
-                setTimeout(() => dispatch(changePosition(moveInfo)), 0);
+                dispatch(changePosition(moveInfo));
             }
         },
     }, [chosenIngredients, ingredient.constructor_id]);

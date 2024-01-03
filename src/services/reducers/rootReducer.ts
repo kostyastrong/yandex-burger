@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
 import availableIngredientsReducer from '../slices/available-ingredients';
 import chosenIngredientsReducer from '../slices/chosen-ingredients';
+import detailedIngredientReducer from '../slices/detailed-ingredient';
 // import numberOfIngredient from "../slices/number-of-ingredient";
 
 // When we pass in an object like {counter: counterReducer}, that says that
@@ -11,7 +12,7 @@ import chosenIngredientsReducer from '../slices/chosen-ingredients';
 const rootReducer = combineReducers({
     availableIngredients: availableIngredientsReducer,
     chosenIngredients: chosenIngredientsReducer,
-    // numberOfIngredient: numberOfIngredient,
+    detailedIngredient: detailedIngredientReducer
 });
 
 export default rootReducer;

@@ -2,13 +2,14 @@ import {Button, ConstructorElement, CurrencyIcon} from '@ya.praktikum/react-deve
 import {dndTypes, IngredientConstructor} from "../../utils/types";
 import styles from './burger-constructor.module.css';
 import Modal from "../modal/modal";
-import {useCallback, useState} from "react";
+import {useCallback, useMemo, useState} from "react";
 import OrderDetails from "../order-details/order-details";
 import {useDispatch, useSelector} from "react-redux";
 import {useDrop} from "react-dnd";
 import {ChosenIngredientsState, pushBack} from "../../services/slices/chosen-ingredients";
 import {DndItemMenu} from "../../utils/classes";
 import SortableComponent from "../burger-constructor-component/sortable-component";
+
 
 export default function BurgerConstructor() {
 
@@ -19,6 +20,12 @@ export default function BurgerConstructor() {
     const dispatch = useDispatch();
 
     let bun = chosenIngredients.bun;
+
+    const cost = useMemo(() => {
+        return chosenIngredients.ingredients.reduce((sum, ingredient) => {
+            return sum + ingredient.price
+        }, 0)
+    }, [chosenIngredients.ingredients]) + (bun ? bun.price * 2 : 0);
 
     // listen to a dropped item
     const [collectedProps, drop] = useDrop(() => ({
@@ -40,6 +47,7 @@ export default function BurgerConstructor() {
         },
         [chosenIngredients.ingredients],
     )
+
     return (
         <div ref={drop} className={styles.burger_constructor}>
             <div className={styles.burger}>
@@ -72,7 +80,7 @@ export default function BurgerConstructor() {
             </div>
             <div className={styles.place_order}>
                 <div className={styles.price}>
-                    <p className="text text_type_digits-medium">1488</p>
+                    <p className="text text_type_digits-medium">{cost}</p>
                     <CurrencyIcon type="primary"/>
                 </div>
                 <Button htmlType="button" type="primary" size="large" onClick={() => setModal(true)}>

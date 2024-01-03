@@ -32,8 +32,10 @@ const chosenIngredients = createSlice({
         changePosition: (state, action: PayloadAction<MoveInfo>) => {
             state.actionNumber += 1;
             if (state.actionNumber % 5 !== 0) {
+                console.log("changePosition: " + state.actionNumber + " is skipped");
                 return;
             }
+            console.log("changePosition: " + state.actionNumber + " is performed");
             let request = action.payload;  // Ingredient
             // find index of requested ingredient
             const oldIndex = request.old_index;

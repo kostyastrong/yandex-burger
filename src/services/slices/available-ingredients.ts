@@ -2,11 +2,11 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {Ingredient} from "../../utils/types";
 
 
-export interface availableIngredientsState {
+export interface AvailableIngredientsState {
     ingredients: Ingredient[],
 }
 
-const initialState = {ingredients: []} as availableIngredientsState;
+const initialState = {ingredients: []} as AvailableIngredientsState;
 
 // availableIngredients saves fetched data about ingredients. We set it once and don't touch ever.
 const availableIngredientsSlice = createSlice({

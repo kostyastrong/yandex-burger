@@ -1,5 +1,5 @@
 import styles from './menu.module.css';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useRef} from 'react';
 import Component from "../burger-ingredients-component/component";
 import {Ingredient} from "../../utils/types";
 import {useSelector} from "react-redux";
@@ -14,7 +14,6 @@ export default function Menu({activeTab, setActiveTab, scroll, setScroll}: {
     const sauceRef = useRef<HTMLParagraphElement>(null);
     const mainRef = useRef<HTMLParagraphElement>(null);
     const rootRef = useRef<HTMLDivElement>(null);
-    const [modalIndex, setModalIndex] = useState("undefined");
 
     useEffect(() => {
         if (!scroll) {  // for smoother behaviour, useEffect doesn't work when buttons in the tabBar weren't pushed
@@ -106,8 +105,6 @@ export default function Menu({activeTab, setActiveTab, scroll, setScroll}: {
                             <Component
                                 ingredient={ingredient}
                                 key={ingredient._id}
-                                setShowModal={(value: string) => setModalIndex(value)}
-                                showModal={modalIndex}
                             />
                         ))}
                 </div>
@@ -121,8 +118,6 @@ export default function Menu({activeTab, setActiveTab, scroll, setScroll}: {
                             <Component
                                 ingredient={ingredient}
                                 key={ingredient._id}
-                                setShowModal={(value: string) => setModalIndex(value)}
-                                showModal={modalIndex}
                             />
                         ))}
                 </div>
@@ -136,8 +131,6 @@ export default function Menu({activeTab, setActiveTab, scroll, setScroll}: {
                             <Component
                                 ingredient={ingredient}
                                 key={ingredient._id}
-                                setShowModal={(value: string) => setModalIndex(value)}
-                                showModal={modalIndex}
                             />
                         ))}
                 </div>

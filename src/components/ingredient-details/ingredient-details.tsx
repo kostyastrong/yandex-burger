@@ -4,8 +4,8 @@ import {useSelector} from "react-redux";
 
 export default function IngredientDetails() {  // protein fat carbohydrate
     const ingredient = useSelector((state: {
-        currentIngredient: Ingredient | null
-    }) => state.currentIngredient);
+        detailedIngredient: { currentIngredient: Ingredient }
+    }) => state.detailedIngredient.currentIngredient);
     return (
         <div className={styles.pfc}>
             <h2 className={`${styles.title} text text_type_main-large mt-10 ml-10`}>Детали ингредиента</h2>

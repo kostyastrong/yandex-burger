@@ -1,14 +1,13 @@
 import {Button, ConstructorElement, CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 import {dndTypes, IngredientConstructor} from "../../utils/types";
 import styles from './burger-constructor.module.css';
-import Modal from "../modal/modal";
-import {useCallback, useMemo, useState} from "react";
-import OrderDetails from "../order-details/order-details";
+import {useCallback, useMemo} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useDrop} from "react-dnd";
 import {ChosenIngredientsState, pushBack} from "../../services/slices/chosen-ingredients";
 import {DndItemMenu} from "../../utils/classes";
 import SortableComponent from "../burger-constructor-component/sortable-component";
+import {openModalOrder} from "../../services/slices/modal-slice";
 
 
 export default function BurgerConstructor() {
@@ -35,8 +34,6 @@ export default function BurgerConstructor() {
             dispatch(pushBack(item.getIngredient()));
         },
     }), [])
-    const [modal, setModal] = useState(false);
-
 
     const renderSortableComponent = useCallback(
         (ingredient: IngredientConstructor) => {
@@ -83,15 +80,12 @@ export default function BurgerConstructor() {
                     <p className="text text_type_digits-medium">{cost}</p>
                     <CurrencyIcon type="primary"/>
                 </div>
-                <Button htmlType="button" type="primary" size="large" onClick={() => setModal(true)}>
+                <Button htmlType="button" type="primary" size="large" onClick={() => {
+                    dispatch(openModalOrder())
+                }}>
                     Оформить заказ
                 </Button>
             </div>
-            {modal && <Modal onClose={() => {
-                setModal(false)
-            }}>
-                <OrderDetails/>
-            </Modal>}
         </div>
     );
 }

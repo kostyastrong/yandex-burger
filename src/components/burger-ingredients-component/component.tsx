@@ -1,19 +1,18 @@
 import {dndTypes, Ingredient} from "../../utils/types";
 import {Counter, CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './component.module.css';
-import Modal from "../modal/modal";
-import IngredientDetails from "../ingredient-details/ingredient-details";
 import {useDrag} from "react-dnd";
 import {DndItemMenu} from "../../utils/classes";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {ChosenIngredientsState} from "../../services/slices/chosen-ingredients";
+import {openModalIngredient} from "../../services/slices/modal-slice";
+import {setCurrentIngredient} from "../../services/slices/detailed-ingredient";
 
 // components which are shown
-export default function Component({ingredient, showModal, setShowModal}: {
+export default function Component({ingredient}: {
     ingredient: Ingredient,
-    showModal: string,
-    setShowModal: (value: string) => void
 }) {
+    const dispatch = useDispatch();
     // map<string, number> doesn't serialize well, but docs has similar example:
     // https://redux.js.org/tutorials/essentials/part-4-using-data
     // const post = useSelector(state =>
@@ -34,7 +33,10 @@ export default function Component({ingredient, showModal, setShowModal}: {
     }), [])
     return (
         <div ref={drag}>
-            <div className={styles.component} onClick={() => setShowModal(ingredient._id)}>
+            <div className={styles.component} onClick={() => {
+                dispatch(setCurrentIngredient(ingredient))
+                dispatch(openModalIngredient())
+            }}>
                 {counter > 0 && <Counter count={counter} size="default" extraClass="m-1"/>}
                 <img className="ml-4 mr-4" src={ingredient.image} alt={ingredient.name}/>
                 <div className={`${styles.price} mt-1 mb-2`}>
@@ -43,13 +45,6 @@ export default function Component({ingredient, showModal, setShowModal}: {
                 </div>
                 <p className={`${styles.subtitle} text text_type_main-default`}>{ingredient.name}</p>
             </div>
-            {showModal === ingredient._id &&
-                <Modal onClose={() => {
-                    setShowModal("undefined")
-                }}>
-                    <IngredientDetails/>
-                </Modal>
-            }
         </div>
     );
 }

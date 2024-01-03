@@ -29,12 +29,18 @@ export default function OrderDetails() {
     const fetchOrder = useCallback(async () => {
         const componentsId = [chosenIngredients.bun._id, ...chosenIngredients.ingredients.map(ingredient => ingredient._id), chosenIngredients.bun._id];
         console.log("componentsId: ", componentsId);
+
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), 2000);
+
         const response = await fetch(serverUrl,
             {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ingredients: componentsId}),
+                signal: controller.signal
             },);
+        clearTimeout(id);
         if (response.ok) {
             const json = await response.json();
             console.log('Order fetched successfully', json);
@@ -80,10 +86,10 @@ export default function OrderDetails() {
             </div>
         default:
             return <div className={styles.model_order}>
-                <h2 className={`${styles.title} ${styles.neon} text text_type_digits-medium mt-30`}>ЗАГРУЗКА</h2>
+                <h2 className={`${styles.title} ${styles.neon} text text_type_digits-large mt-30`}>ЖДЁМ</h2>
                 <p className="text text_type_main-default mt-15">Ожидание ответа от сервера.</p>
                 <p className="text text_type_main-default text_color_inactive mt-2 mb-30">
-                    Если номер не высвечивается, обратитесь на кассу.</p>
+                    Если статус не меняется, обратитесь на кассу.</p>
             </div>
     }
 }

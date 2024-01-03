@@ -2,11 +2,7 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {Ingredient} from "../../utils/types";
 import {bunMock} from "../../components/burger-constructor/bun_mock";
 
-interface modalState {
-    currentIngredient: Ingredient;
-}
-
-const initialState: modalState = {
+const initialState = {
     currentIngredient: bunMock,
 };
 

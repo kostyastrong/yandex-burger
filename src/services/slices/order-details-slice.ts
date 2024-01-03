@@ -9,7 +9,7 @@ const initialState: OrderDetailsState = {
 };
 
 const orderDetailsSlice = createSlice({
-    name: 'orderDetails',
+    name: 'ORDER_DETAILS',
     initialState: initialState,
     reducers: {
         setOrderNumber: (state, action: PayloadAction<string>) => {

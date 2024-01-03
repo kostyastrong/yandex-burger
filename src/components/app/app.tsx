@@ -1,14 +1,12 @@
 import React, {useEffect} from 'react';
 import styles from './app.module.css';
 import AppHeader from "../app-header/app-header";
-import BurgerIngredients from "../burger-ingredients/burger-ingredients";
-import BurgerConstructor from "../burger-constructor/burger-constructor";
 import {reset} from "../../services/slices/available-ingredients";
 import {Ingredient} from '../../utils/types';
-import {useDispatch} from "react-redux";
 import store from "../../services/store";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
+import Main from "../main/main";
 
 
 async function getIngredientsFromServer(url: string) {
@@ -32,7 +30,6 @@ const setIngredients = async (dispatch: (arg0: {
 
 export default function App() {
 
-    const dispatch = useDispatch();
 
     useEffect(() => {
         const fetchIngredients = async () => {
@@ -51,10 +48,7 @@ export default function App() {
         <div className={styles.App}>
             <AppHeader/>
             <DndProvider backend={HTML5Backend}>
-                <main className={styles.main}>
-                    <BurgerIngredients/>
-                    <BurgerConstructor/>
-                </main>
+                <Main/>
             </DndProvider>
         </div>
     );  // ingredient["_id"] should be used carefully, e.g. when ingredients are not fetch, it brakes

@@ -12,12 +12,18 @@ interface OrderResponse {
     success: boolean;
 }
 
+enum ServerResponse {
+    loading,
+    error,
+    success
+}
+
 export default function OrderDetails() {
     const chosenIngredients: ChosenIngredientsState = useSelector((state: {
         chosenIngredients: ChosenIngredientsState
     }) => state.chosenIngredients);
     const [serverUrl, setServerUrl] = useState('https://norma.nomoreparties.space/api/orders');
-    const [success, setSuccess] = useState(false);
+    const [success, setSuccess] = useState(ServerResponse.loading);
     const [orderNumber, setOrderNumber] = useState('');
 
     const fetchOrder = useCallback(async () => {
@@ -41,19 +47,21 @@ export default function OrderDetails() {
         const getData = async () => {
             try {
                 const data: OrderResponse = await fetchOrder();
-                setSuccess(true);
+                setSuccess(ServerResponse.success);
                 const orderNumber = data.order.number.toString();
                 setOrderNumber("0".repeat(6 - orderNumber.length < 6 ? 6 - orderNumber.length : 0) + orderNumber.toString())
                 console.log('Order fetched successfully');
             } catch (error) {
+                setSuccess(ServerResponse.error)
                 console.error('Error fetching order:', error);
             }
         };
         getData();
     }, [serverUrl, fetchOrder]);
-    if (success) {
-        return (
-            <div className={styles.model_order}>
+
+    switch (success) {
+        case ServerResponse.success:
+            return <div className={styles.model_order}>
                 <h2 className={`${styles.title} ${styles.neon} text text_type_digits-large mt-30`}>{orderNumber}</h2>
                 <p className={`text text_type_main-medium mt-8`}>идентификатор заказа</p>
                 <img className={"mt-15"} src={done} alt="Заказ подтвержден"/>
@@ -61,17 +69,21 @@ export default function OrderDetails() {
                 <p className="text text_type_main-default text_color_inactive mt-2 mb-30">Дождитесь готовности на
                     орбитальной станции</p>
             </div>
-        );
+        case ServerResponse.error:
+            return <div className={styles.model_order}>
+                <h2 className={`${styles.title} ${styles.neon} text text_type_digits-large mt-30`}>СЕРВЕР</h2>
+                <h2 className={`${styles.title} ${styles.neon} text text_type_digits-large mt-30`}>ПОМЕР</h2>
+                <p className={`text text_type_main-medium mt-8`}>Попробуйте повторить попытку.</p>
+                <p className="text text_type_main-default mt-15">К сожалению, мы не смогли принять ваш заказ.</p>
+                <p className="text text_type_main-default text_color_inactive mt-2 mb-30">
+                    Если проблема не уходит, обратитесь на кассу.</p>
+            </div>
+        default:
+            return <div className={styles.model_order}>
+                <h2 className={`${styles.title} ${styles.neon} text text_type_digits-medium mt-30`}>ЗАГРУЗКА</h2>
+                <p className="text text_type_main-default mt-15">Ожидание ответа от сервера.</p>
+                <p className="text text_type_main-default text_color_inactive mt-2 mb-30">
+                    Если номер не высвечивается, обратитесь на кассу.</p>
+            </div>
     }
-
-    return (
-        <div className={styles.model_order}>
-            <h2 className={`${styles.title} ${styles.neon} text text_type_digits-large mt-30`}>СЕРВЕР</h2>
-            <h2 className={`${styles.title} ${styles.neon} text text_type_digits-large mt-30`}>ПОМЕР</h2>
-            <p className={`text text_type_main-medium mt-8`}>Попробуйте повторить попытку.</p>
-            <p className="text text_type_main-default mt-15">К сожалению, мы не смогли принять ваш заказ.</p>
-            <p className="text text_type_main-default text_color_inactive mt-2 mb-30">
-                Если проблема не уходит, обратитесь к продавцу за кассой.</p>
-        </div>
-    );
 }

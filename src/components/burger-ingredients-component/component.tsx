@@ -19,7 +19,7 @@ export default function Component({ingredient, showModal, setShowModal}: {
     // const post = useSelector(state =>
     //     state.posts.find(post => post.id === postId)
     //   )
-    // by this they keep tracking each post individually, though it is less efficient than having map
+    // by this they keep tracking each post individually, though it is less efficient than having map with number of the specific type as a value
     const counter: number = useSelector((state: {
         chosenIngredients: ChosenIngredientsState
     }) => state.chosenIngredients.ingredients.filter((chosenIngredient) => chosenIngredient._id === ingredient._id).length);
@@ -44,8 +44,10 @@ export default function Component({ingredient, showModal, setShowModal}: {
                 <p className={`${styles.subtitle} text text_type_main-default`}>{ingredient.name}</p>
             </div>
             {showModal === ingredient._id &&
-                <Modal onClose={() => setShowModal("undefined")}>
-                    <IngredientDetails ingredient={ingredient}/>
+                <Modal onClose={() => {
+                    setShowModal("undefined")
+                }}>
+                    <IngredientDetails/>
                 </Modal>
             }
         </div>

@@ -1,12 +1,13 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {Ingredient} from "../../utils/types";
+import {bunMock} from "../../components/burger-constructor/bun_mock";
 
 interface modalState {
-    currentIngredient: Ingredient | null;
+    currentIngredient: Ingredient;
 }
 
 const initialState: modalState = {
-    currentIngredient: null,
+    currentIngredient: bunMock,
 };
 
 const detailedIngredientSlice = createSlice({
@@ -16,12 +17,9 @@ const detailedIngredientSlice = createSlice({
         setCurrentIngredient: (state, action: PayloadAction<Ingredient>) => {
             state.currentIngredient = action.payload;
         },
-        clearCurrentIngredient: (state) => {
-            state.currentIngredient = null;
-        },
     },
 });
 
-export const {setCurrentIngredient, clearCurrentIngredient} = detailedIngredientSlice.actions;
+export const {setCurrentIngredient} = detailedIngredientSlice.actions;
 
 export default detailedIngredientSlice.reducer;

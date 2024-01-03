@@ -87,7 +87,9 @@ export default function BurgerConstructor() {
                     Оформить заказ
                 </Button>
             </div>
-            {modal && <Modal onClose={() => setModal(false)}>
+            {modal && <Modal onClose={() => {
+                setModal(false)
+            }}>
                 <OrderDetails/>
             </Modal>}
         </div>

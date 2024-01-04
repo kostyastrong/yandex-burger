@@ -8,11 +8,12 @@ export interface ChosenIngredientsState {
     bun: Ingredient,
     // to count number of calls:
     actionNumber: number,
+    isBunChosen: boolean,
 }
 
 const CHOSEN_INGREDIENTS = 'CHOSEN_INGREDIENTS';
 const initialState = {
-    ingredients: [], bun: bunMock, actionNumber: 0,
+    ingredients: [], bun: bunMock, actionNumber: 0, isBunChosen: false,
 } as ChosenIngredientsState;
 
 const chosenIngredients = createSlice({
@@ -24,6 +25,7 @@ const chosenIngredients = createSlice({
             state.actionNumber += 1;
             let ingredient = action.payload;  // Ingredient
             if (ingredient.type === "bun") {
+                state.isBunChosen = true;
                 state.bun = ingredient;
             } else {
                 state.ingredients.push({...ingredient, constructor_id: state.actionNumber});

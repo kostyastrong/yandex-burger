@@ -7,12 +7,13 @@ import {useDispatch, useSelector} from "react-redux";
 import {ChosenIngredientsState} from "../../services/slices/chosen-ingredients";
 import {openModalIngredient} from "../../services/slices/modal-slice";
 import {setCurrentIngredient} from "../../services/slices/detailed-ingredient";
+import {AppDispatch} from "../../services/reducers/root-reducer";
 
 // components which are shown
 export default function Component({ingredient}: {
     ingredient: Ingredient,
 }) {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     // map<string, number> doesn't serialize well, but docs has similar example:
     // https://redux.js.org/tutorials/essentials/part-4-using-data
     // const post = useSelector(state =>

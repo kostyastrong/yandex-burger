@@ -1,30 +1,17 @@
 import {CloseIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 
 import styles from './modal.module.css';
-import {useEffect} from "react";
+import React, {ReactNode, useEffect} from "react";
 import ModalOverlay from "./overlay/modal-overlay";
 import {createPortal} from "react-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {closeModal, ModalVisibility} from "../../services/slices/modal-slice";
-import IngredientDetails from "../ingredient-details/ingredient-details";
-import OrderDetails from "../order-details/order-details";
 
-export default function Modal() {
+export default function Modal({onClose, children}: { onClose: () => void, children: ReactNode }) {
 
-    const modalState = useSelector((state: { modal: { visibility: ModalVisibility } }) => state.modal.visibility);
-    const dispatch = useDispatch();
-    const onClose = () => {
-        console.log("onClose");
-        dispatch(closeModal());
-    }  // no callback, independent
-
-    const children = modalState.valueOf() === ModalVisibility.INGREDIENT_DETAILS.valueOf() ? <IngredientDetails/> :
-        <OrderDetails/>
 
     useEffect(() => {
         const handleEsc = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
-
+                onClose();
             }
         };
         window.addEventListener('keydown', handleEsc);

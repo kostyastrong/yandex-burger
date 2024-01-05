@@ -1,4 +1,3 @@
-import {inspect} from "util";
 import styles from './modal-overlay.module.css';
 import {ReactNode} from "react";
 

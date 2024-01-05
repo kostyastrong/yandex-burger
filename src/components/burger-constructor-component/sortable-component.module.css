@@ -1,0 +1,8 @@
+.swappable {
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    cursor: move;
+}

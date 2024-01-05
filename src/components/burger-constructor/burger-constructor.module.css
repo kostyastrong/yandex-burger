@@ -7,7 +7,7 @@
 .burger {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+
     max-height: 620px;
 }
 
@@ -15,14 +15,6 @@
     display: flex;
     overflow-y: auto;
     flex-direction: column;
-    gap: 10px;
-}
-
-.swappable {
-    gap: 8px;
-    align-items: center;
-    display: flex;
-    flex-direction: row;
 }
 
 .place_order {

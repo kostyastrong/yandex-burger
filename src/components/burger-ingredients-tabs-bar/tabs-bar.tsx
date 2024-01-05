@@ -1,5 +1,4 @@
 import {Tab} from '@ya.praktikum/react-developer-burger-ui-components';
-import {useState} from "react";
 import styles from './tabs-bar.module.css';
 
 export default function TabsBar({activeTab, setActiveTab, setScrollEnable}: {

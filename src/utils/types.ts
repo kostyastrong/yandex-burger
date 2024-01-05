@@ -1,5 +1,3 @@
-import exp from "constants";
-
 export type Ingredient = {
     _id: string,
     name: string,
@@ -15,6 +13,14 @@ export type Ingredient = {
     __v: number,
 }
 
-export type BurgerIngredientProps = {
-    ingredients: Ingredient[],
-};
+export type IngredientConstructor = Ingredient & { constructor_id: number }
+
+export type MoveInfo = {
+    old_index: number,
+    new_index: number,
+}
+
+export const dndTypes = {
+    MENU_ITEM: "MENU_ITEM",
+    CONSTRUCTOR_ITEM: "CONSTRUCTOR_ITEM",
+}

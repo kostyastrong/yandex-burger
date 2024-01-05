@@ -1,10 +1,11 @@
 import styles from './menu.module.css';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useRef} from 'react';
 import Component from "../burger-ingredients-component/component";
+import {useSelector} from "react-redux";
+import {RootState} from "../../services/reducers/root-reducer";
 import {Ingredient} from "../../utils/types";
 
-export default function Menu({ingredients, activeTab, setActiveTab, scroll, setScroll}: {
-    ingredients: Ingredient[],
+export default function Menu({activeTab, setActiveTab, scroll, setScroll}: {
     activeTab: string,
     scroll: boolean,
     setActiveTab: (value: string) => void,
@@ -14,7 +15,6 @@ export default function Menu({ingredients, activeTab, setActiveTab, scroll, setS
     const sauceRef = useRef<HTMLParagraphElement>(null);
     const mainRef = useRef<HTMLParagraphElement>(null);
     const rootRef = useRef<HTMLDivElement>(null);
-    const [modalIndex, setModalIndex] = useState("undefined");
 
     useEffect(() => {
         if (!scroll) {  // for smoother behaviour, useEffect doesn't work when buttons in the tabBar weren't pushed
@@ -91,7 +91,7 @@ export default function Menu({ingredients, activeTab, setActiveTab, scroll, setS
             }
         };
     }, [activeTab, scroll]);
-
+    const ingredients: Ingredient[] = useSelector((state: RootState) => state.availableIngredients.ingredients);
     return (
         <div className={styles.scroll} ref={rootRef}>
             <section>
@@ -103,8 +103,6 @@ export default function Menu({ingredients, activeTab, setActiveTab, scroll, setS
                             <Component
                                 ingredient={ingredient}
                                 key={ingredient._id}
-                                setShowModal={(value: string) => setModalIndex(value)}
-                                showModal={modalIndex}
                             />
                         ))}
                 </div>
@@ -118,8 +116,6 @@ export default function Menu({ingredients, activeTab, setActiveTab, scroll, setS
                             <Component
                                 ingredient={ingredient}
                                 key={ingredient._id}
-                                setShowModal={(value: string) => setModalIndex(value)}
-                                showModal={modalIndex}
                             />
                         ))}
                 </div>
@@ -133,8 +129,6 @@ export default function Menu({ingredients, activeTab, setActiveTab, scroll, setS
                             <Component
                                 ingredient={ingredient}
                                 key={ingredient._id}
-                                setShowModal={(value: string) => setModalIndex(value)}
-                                showModal={modalIndex}
                             />
                         ))}
                 </div>

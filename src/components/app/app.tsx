@@ -1,37 +1,26 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import styles from './app.module.css';
 import AppHeader from "../app-header/app-header";
-import BurgerIngredients from "../burger-ingredients/burger-ingredients";
-import BurgerConstructor from "../burger-constructor/burger-constructor";
-
+import {DndProvider} from "react-dnd";
+import {HTML5Backend} from "react-dnd-html5-backend";
+import Main from "../main/main";
+import {useDispatch} from "react-redux";
+import {fetchIngredients} from "../../services/actions/fetch-ingredients";
+import {AppDispatch} from "../../services/reducers/root-reducer";
 
 export default function App() {
-
-    const url = "https://norma.nomoreparties.space/api/ingredients";
-    // fetch data from url
-    const [ingredients, setIngredients] = useState([]);
+    const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        fetch(url).then((response) => {
-            if (response.ok) {
-                response.json().then(json => {
-                    setIngredients(json.data)
-                    console.log('Data fetched successfully');
-                });
-                return;
-            }
-            throw new Error('Network response was not ok: ' + response.statusText);
-        }).catch((error) => console.error('Error fetching data:', error));
-    }, []);
+        dispatch(fetchIngredients());
+    }, [dispatch]);
 
     return (
         <div className={styles.App}>
             <AppHeader/>
-            <main className={styles.main}>
-                <BurgerIngredients ingredients={ingredients}/>
-                <BurgerConstructor ingredients={ingredients}
-                                   order={ingredients.map((ingredient) => ingredient["_id"])}/>
-            </main>
+            <DndProvider backend={HTML5Backend}>
+                <Main/>
+            </DndProvider>
         </div>
     );  // ingredient["_id"] should be used carefully, e.g. when ingredients are not fetch, it brakes
 }
